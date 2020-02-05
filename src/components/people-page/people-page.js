@@ -10,8 +10,30 @@ export default class PeoplePage extends Component {
 
   state = {
     selectedPerson: 3,
+    loadingPerson: true,
     hasError: false
   };
+
+  onUpdated = () => {
+    this.setState({
+      loadingPerson: false,
+    })
+  }
+
+  onPersonSelected = (id) => {
+    this.setState({
+      selectedPerson: id,
+      loadingPerson: true,
+    })
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.selectedPerson !== prevState.selectedPerson) {
+      this.setState({
+        loadingPerson: true,
+      })
+    }
+  }
 
   componentDidCatch(error, info) {
 
@@ -25,7 +47,6 @@ export default class PeoplePage extends Component {
   };
 
   render() {
-
     if (this.state.hasError) {
       return <ErrorIndicator />;
     }
@@ -36,7 +57,9 @@ export default class PeoplePage extends Component {
           <ItemList onItemSelected={this.onPersonSelected} />
         </div>
         <div className="col-md-6">
-          <PersonDetails personId={this.state.selectedPerson} />
+          <PersonDetails personId={this.state.selectedPerson}
+            loadingPerson={this.state.loadingPerson}
+            onUpdated={this.onUpdated} />
         </div>
       </div>
     );
