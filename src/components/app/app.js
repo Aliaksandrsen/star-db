@@ -4,19 +4,35 @@ import Header from '../header';
 import RandomPlanet from '../random-planet';
 import ItemList from '../item-list';
 import PersonDetails from '../person-details';
+import Spinner from '../spinner';
 
 import './app.css';
 
 export default class App extends Component {
 
   state = {
-    selectedPerson: null,
+    selectedPerson: 5,
+    loadingPerson: false,
   };
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.selectedPerson !== prevState.selectedPerson) {
+      this.setState({
+        loadingPerson: true,
+      })
+    }
+  }
+
+  onUpdated = () => {
+    this.setState({
+      loadingPerson: false,
+    })
+  }
 
   onPersonSelected = (id) => {
     this.setState({
       selectedPerson: id,
+      loadingPerson: true,
     })
   }
 
@@ -32,8 +48,10 @@ export default class App extends Component {
               onItemSelected={(id) => this.onPersonSelected(id)} />
           </div>
           <div className="col-md-6">
-            <PersonDetails 
-            personId={this.state.selectedPerson}/>
+            <PersonDetails
+              personId={this.state.selectedPerson}
+              loadingPerson={this.state.loadingPerson} 
+              onUpdated={this.onUpdated}/>
           </div>
         </div>
       </div>
