@@ -5,6 +5,7 @@ import RandomPlanet from '../random-planet';
 import ItemList from '../item-list';
 import PersonDetails from '../person-details';
 import Spinner from '../spinner';
+import ErrorIndicator from '../error-indicator';
 
 import './app.css';
 
@@ -13,7 +14,14 @@ export default class App extends Component {
   state = {
     selectedPerson: 5,
     loadingPerson: false,
+    hasError: false,
   };
+
+  componentDidCatch() {
+    this.setState({
+      hasError: true,
+    })
+  }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.selectedPerson !== prevState.selectedPerson) {
@@ -37,6 +45,8 @@ export default class App extends Component {
   }
 
   render() {
+
+    if (this.state.hasError) return <ErrorIndicator />
     return (
       <div>
         <Header />
@@ -50,8 +60,9 @@ export default class App extends Component {
           <div className="col-md-6">
             <PersonDetails
               personId={this.state.selectedPerson}
-              loadingPerson={this.state.loadingPerson} 
-              onUpdated={this.onUpdated}/>
+              loadingPerson={this.state.loadingPerson}
+              onUpdated={this.onUpdated}
+              />
           </div>
         </div>
       </div>
